@@ -1,0 +1,44 @@
+CREATE TABLE users (
+    id UUID PRIMARY KEY,
+    display_name VARCHAR(100) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP
+);
+
+CREATE TABLE wallets(
+    id UUID PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES users(id),
+    balance DECIMAL(15,2) NOT NULL DEFAULT 0.00,
+    version INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE orders(
+    id UUID PRIMARY KEY,
+    description TEXT NOT NULL,
+    price DECIMAL(15,2) NOT NULL,
+    customer_id UUID NOT NULL REFERENCES users(id),
+    executor_id UUID REFERENCES users(id),
+    status VARCHAR(50) NOT NULL,
+    deadline TIMESTAMP,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    finished_at TIMESTAMP,
+    version INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE transactions(
+    id  UUID PRIMARY KEY,
+    order_id UUID NOT NULL REFERENCES orders(id),
+    sender_id UUID NOT NULL REFERENCES users(id),
+    receiver_id UUID NOT NULL REFERENCES users(id),
+    amount DECIMAL(15,2) NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    payment_method VARCHAR(50),
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
