@@ -40,6 +40,17 @@
 17. **Race Conditions:** Застосовано Optimistic Locking (`@Version` у `Wallet`) для запобігання подвійному витрачанню коштів (Double-spending).
 18. **ACID:** Інтегровано транзакційні сервіси (Transaction Propagation) для гарантії принципу "або все, або нічого" при переказі грошей.
 
+### Етап 6. Розширене Фінансове Ядро (Escrow Pattern)
+19. **Безпечна угода (Escrow):** Впроваджено розділення балансу на доступний (`balance`) та заморожений (`holdBalance`). Гроші холдуються при створенні замовлення і переказуються лише після успішного завершення.
+20. **Зовнішні транзакції:** Реалізовано логіку депозитів (Top-Up) із підтримкою nullable-полів для `sender_id` та `order_id`, що дозволяє відстежувати зовнішні поповнення через `TransactionType` та `PaymentMethod`.
+
+### Етап 7. Подієво-орієнтована архітектура (Event-Driven Architecture)
+21. **Декаплінг сервісів:** Застосовано патерн Observer через Spring `ApplicationEventPublisher`. Створення гаманця відв'язано від реєстрації юзера (інкапсуляція бізнес-логіки через `@EventListener`).
+
+### Етап 8. Аудит (Data Traceability)
+22. **JPA Auditing:** Створено `BaseAuditingEntity` для автоматичного відстеження дат створення/оновлення та ідентифікації авторів змін (`created_by`, `updated_by`) у всіх ключових таблицях бази даних.
+
+
 ## 🗄 Структура Бази Даних (ER Diagram)
 ```mermaid
 erDiagram
@@ -59,6 +70,8 @@ erDiagram
         TIMESTAMP created_at
         TIMESTAMP updated_at
         TIMESTAMP deleted_at
+        VARCHAR created_by
+        VARCHAR updated_by
     }
     WALLET {
         UUID id PK
@@ -67,6 +80,9 @@ erDiagram
         INTEGER version
         TIMESTAMP created_at
         TIMESTAMP updated_at
+        DECIMAL hold_balance
+        VARCHAR created_by
+        VARCHAR updated_by
     }
     ORDER {
         UUID id PK
@@ -77,15 +93,22 @@ erDiagram
         VARCHAR status
         TIMESTAMP deadline
         TIMESTAMP created_at
+        TIMESTAMP updated_at
         TIMESTAMP finished_at
+        VARCHAR created_by
+        VARCHAR updated_by
     }
     TRANSACTION {
         UUID id PK
-        UUID order_id FK
-        UUID sender_id FK
-        UUID receiver_id FK
+        UUID order_id FK, Nullable
+        UUID sender_id FK, Nullable
+        UUID receiver_id FK, Nullable
         DECIMAL amount
         VARCHAR status
         VARCHAR payment_method
         TIMESTAMP created_at
+        TIMESTAMP updated_at
+        VARCHAR created_by
+        VARCHAR updated_by
+        VARCHAR type
     }
