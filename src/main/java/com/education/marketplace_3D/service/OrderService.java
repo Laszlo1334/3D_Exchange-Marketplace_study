@@ -117,6 +117,11 @@ public class OrderService {
         return toDto(order);
     }
 
+//    @Transactional (readOnly = true)
+//    public void testJoinFetch(){
+//        orderRepository.findAllOrdersWithCustomer();
+//    }
+
     private OrderResponseDto toDto (Order order){
         UserSummaryDto customer = new UserSummaryDto(order.getCustomer().getId(), order.getCustomer().getDisplayName());
         //if order have not been taken by any of executor, this will help not to get nullPointerException

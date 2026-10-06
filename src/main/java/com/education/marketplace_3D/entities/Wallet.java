@@ -31,5 +31,6 @@ public class Wallet extends BaseAuditingEntity {
     public Wallet (User user){
         this.user = user;
         this.balance = BigDecimal.ZERO;
+        this.holdBalance = BigDecimal.ZERO;
     }
 }

@@ -7,7 +7,9 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface OrderRepository extends JpaRepository<Order, UUID>, JpaSpecificationExecutor<Order> {
@@ -16,4 +18,7 @@ public interface OrderRepository extends JpaRepository<Order, UUID>, JpaSpecific
     @Override
     @EntityGraph(attributePaths = {"customer", "executor"})
     Page<Order> findAll (Specification<Order> spec, Pageable pageable);
+
+//    @Query("SELECT o FROM Order o JOIN FETCH o.customer")
+//    List<Order> findAllOrdersWithCustomer();
 }

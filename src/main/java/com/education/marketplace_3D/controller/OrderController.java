@@ -3,6 +3,7 @@ package com.education.marketplace_3D.controller;
 import com.education.marketplace_3D.dto.OrderCreateDto;
 import com.education.marketplace_3D.dto.OrderResponseDto;
 import com.education.marketplace_3D.enums.OrderStatus;
+import com.education.marketplace_3D.repository.OrderRepository;
 import com.education.marketplace_3D.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -26,6 +27,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class OrderController {
     private final OrderService orderService;
+    private final OrderRepository orderRepository;
 
     @PostMapping
     @Operation(summary = "Створення ногового замовлення")
@@ -77,5 +79,11 @@ public class OrderController {
         return ResponseEntity.ok(dto);
     }
 
+//    @GetMapping ("/my/orders/query")
+//    @Operation (summary = "Отримати за допомогою query")
+//    @SecurityRequirement(name = "bearerAuth")
+//    public void getMyOrdersWithQuery (){
+//        orderService.testJoinFetch();
+//    }
 
 }
