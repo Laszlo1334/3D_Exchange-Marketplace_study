@@ -33,7 +33,7 @@ public class Order extends BaseAuditingEntity{
     private OrderStatus status;
     private LocalDateTime deadline;
     private LocalDateTime finishedAt;
-    @Version
+    @Version // Have to add to database
     private Integer version;
     @Column(length = 500)
     private String resultFileUrl;
