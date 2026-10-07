@@ -5,6 +5,7 @@ import com.education.marketplace_3D.dto.OrderResponseDto;
 import com.education.marketplace_3D.dto.UserSummaryDto;
 import com.education.marketplace_3D.entities.Order;
 import com.education.marketplace_3D.entities.User;
+import com.education.marketplace_3D.enums.AuditAction;
 import com.education.marketplace_3D.enums.OrderStatus;
 import com.education.marketplace_3D.repository.OrderRepository;
 import com.education.marketplace_3D.repository.UserRepository;
@@ -29,6 +30,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final TransactionService transactionService;
+    private final AuditService auditService;
 
     @Transactional
     public UUID createOrder (OrderCreateDto dto, String customerEmail){
@@ -83,6 +85,7 @@ public class OrderService {
         }
         order.setStatus(OrderStatus.COMPLETED);
         order.setFinishedAt(LocalDateTime.now());
+        auditService.logAction(AuditAction.PAYMENT_FAILED, "test error", userEmail);
         transactionService.processPayment(order);
         return toDto(order);
     }

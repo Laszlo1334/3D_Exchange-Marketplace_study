@@ -1,0 +1,7 @@
+CREATE TABLE audit_log(
+    id UUID PRIMARY KEY,
+    action VARCHAR(255) NOT NULL,
+    description VARCHAR(500) NOT NULL,
+    user_email VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
