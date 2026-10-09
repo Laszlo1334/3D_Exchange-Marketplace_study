@@ -20,7 +20,7 @@ public class Wallet extends BaseAuditingEntity {
     @GeneratedValue(strategy = GenerationType.UUID)
     @Setter(AccessLevel.NONE)
     private UUID id;
-    @OneToOne
+    @OneToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
     private BigDecimal balance;

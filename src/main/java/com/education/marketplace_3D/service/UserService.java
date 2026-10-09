@@ -1,8 +1,10 @@
 package com.education.marketplace_3D.service;
 
+import com.education.marketplace_3D.dto.JwtAuthResponse;
 import com.education.marketplace_3D.dto.UserLoginDto;
 import com.education.marketplace_3D.dto.UserProfileDto;
 import com.education.marketplace_3D.dto.UserRegistrationDto;
+import com.education.marketplace_3D.entities.RefreshToken;
 import com.education.marketplace_3D.entities.User;
 import com.education.marketplace_3D.entities.Wallet;
 import com.education.marketplace_3D.enums.UserRole;
@@ -25,6 +27,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final ApplicationEventPublisher eventPublisher;
+    private final RefreshTokenService refreshTokenService;
 
     @Transactional
     public void registerUser(UserRegistrationDto dto){
@@ -41,15 +44,16 @@ public class UserService {
         eventPublisher.publishEvent(new UserRegisterEvent(newUser));
     }
 
-    public String loginUser(UserLoginDto dto){
+    public JwtAuthResponse loginUser(UserLoginDto dto){
         User user = userRepository
                 .findByEmail(dto.email())
                 .orElseThrow(()->new IllegalArgumentException("Невірний email або пароль."));
         if(!(passwordEncoder.matches(dto.password(), user.getPassword()))){
             throw new IllegalArgumentException("Невірний email або пароль.");
         }
-        return jwtService.generateToken(user.getEmail());
-
+        String accessToken = jwtService.generateToken(user.getEmail());
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+        return new JwtAuthResponse(accessToken, refreshToken.getToken());
     }
 
     @Transactional(readOnly = true)

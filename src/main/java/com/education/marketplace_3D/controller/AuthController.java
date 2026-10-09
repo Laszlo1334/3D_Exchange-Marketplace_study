@@ -1,5 +1,6 @@
 package com.education.marketplace_3D.controller;
 
+import com.education.marketplace_3D.dto.JwtAuthResponse;
 import com.education.marketplace_3D.dto.UserLoginDto;
 import com.education.marketplace_3D.dto.UserRegistrationDto;
 import com.education.marketplace_3D.service.UserService;
@@ -25,8 +26,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@Valid @RequestBody UserLoginDto user){
-        String sessionToken = userService.loginUser(user);
+    public ResponseEntity<JwtAuthResponse> loginUser(@Valid @RequestBody UserLoginDto user){
+        JwtAuthResponse sessionToken = userService.loginUser(user);
         return ResponseEntity.ok(sessionToken);
     }
 }
