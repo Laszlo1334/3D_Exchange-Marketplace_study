@@ -11,7 +11,7 @@ import java.util.Date;
 public class JwtService {
     private final String secretKey = "3DMarketplaceSuperSecretKeyForJwtSignatureAlgorithm";
 
-    public String generateToken(String email){
+    public String generateAccessToken(String email){
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(new Date(System.currentTimeMillis()))

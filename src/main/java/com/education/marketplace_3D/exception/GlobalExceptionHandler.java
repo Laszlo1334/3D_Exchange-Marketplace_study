@@ -54,4 +54,15 @@ public class GlobalExceptionHandler {
         );
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
+
+    @ExceptionHandler(TokenRefreshException.class)
+    public ResponseEntity<AppError> handleTokenRefreshException (TokenRefreshException ex){
+        AppError error = new AppError(
+                403,
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
 }

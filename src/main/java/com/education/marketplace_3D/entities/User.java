@@ -11,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -31,6 +32,8 @@ public class User  extends BaseAuditingEntity implements UserDetails {
     @Enumerated (EnumType.STRING)
     private UserRole role;
     private LocalDateTime deletedAt;
+    @OneToMany (mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RefreshToken> refreshTokens = new ArrayList<>();
 
     public User(String displayName, String email, String password, UserRole role){
         this.displayName = displayName;

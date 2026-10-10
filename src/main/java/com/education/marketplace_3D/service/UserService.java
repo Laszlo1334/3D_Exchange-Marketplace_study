@@ -51,7 +51,7 @@ public class UserService {
         if(!(passwordEncoder.matches(dto.password(), user.getPassword()))){
             throw new IllegalArgumentException("Невірний email або пароль.");
         }
-        String accessToken = jwtService.generateToken(user.getEmail());
+        String accessToken = jwtService.generateAccessToken(user.getEmail());
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
         return new JwtAuthResponse(accessToken, refreshToken.getToken());
     }
