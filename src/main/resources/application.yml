@@ -15,3 +15,10 @@ spring:
   flyway:
     enabled: true
     baseline-on-migrate: true
+aws:
+  s3:
+    endpoint: http://localhost:9090
+    access-key: test-key
+    secret-key: test-secret
+    bucket-name: 3d-models-bucket
+    region: us-east-1
