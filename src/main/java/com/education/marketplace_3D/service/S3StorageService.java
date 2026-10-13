@@ -3,6 +3,7 @@ package com.education.marketplace_3D.service;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -11,6 +12,7 @@ import software.amazon.awssdk.services.s3.model.CreateBucketRequest;
 import software.amazon.awssdk.services.s3.model.HeadBucketRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
@@ -50,18 +52,22 @@ public class S3StorageService {
         }
     }
 
-//    @PostConstruct
-//    public void init() {
-//        try {
-//            s3Client.headBucket(HeadBucketRequest.builder().bucket(bucketName).build());
-//            System.out.println("Bucket '" + bucketName + "' already exists.");
-//        } catch (Exception e) {
-//            try {
-//                s3Client.createBucket(CreateBucketRequest.builder().bucket(bucketName).build());
-//                System.out.println("Bucket '" + bucketName + "' created successfully.");
-//            } catch (Exception ex) {
-//                System.err.println("FAILED TO CONNECT TO LOCALSTACK: " + ex.getMessage());
-//            }
-//        }
-//    }
+    @Async
+    public void uploadFileAsync (File tempFile, String originalFilename){
+        String name = UUID.randomUUID() + "__" + originalFilename;
+        try {
+            PutObjectRequest putObjectRequest = PutObjectRequest.builder().bucket(bucketName).key(name).build();
+        s3Client.putObject(putObjectRequest, RequestBody.fromFile(tempFile));
+            System.out.println("File " + name + "successfully loaded in S3 thread " + Thread.currentThread().getName());
+        }catch (Exception e){
+            System.out.println("Error uploading file to S3: " + e.getMessage());
+        }finally {
+            if(tempFile.exists()){
+                boolean isDeleted = tempFile.delete();
+                if (!isDeleted){
+                    System.out.println("Failed to delete temp file: " + tempFile.getAbsolutePath());
+                }
+            }
+        }
+    }
 }

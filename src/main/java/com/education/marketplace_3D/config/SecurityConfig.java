@@ -32,7 +32,8 @@ public class SecurityConfig {
                         "/api/v1/orders/feed",
                         "/api/v1/auth/refresh",
                         "/api/v1/auth/logout",
-                        "/api/v1/storage/upload").permitAll()
+                        "/api/v1/storage/upload",
+                        "/api/v1/storage/upload/async").permitAll()
                 .anyRequest().authenticated()
         );
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
